@@ -13,3 +13,5 @@ The algorithms and the mathematical tools developed during the project prove fea
 Method
 
 The ﬁrst part is based on a “rough” estimation of the position of the aortic lumen.  For this purpose we assume that the aortic-cross sections are circular and we try to track the position of the aorta using the Kalman Filter. The observation (measurement) needed by the Kalman procedure is extracted from the Hough Circle Transformation (HCT). In the ﬁrst image we do not have any previous knowledge about the cross-section position so we apply the HCT in the extended region of the image. This way we extract the initial state vector (one of the initial conditions) needed for the Kalman Filtering. Then the ﬁlter estimates and corrects HCT measurements and moreover deﬁnes smaller regions (Region of Interest-ROI) for the HCT application (gif. ﬁgure Kalman Tracking ). When the recursive procedure ends a level set method is applied.
+
+further details in https://www.researchgate.net/publication/304581790_Automatic_segmentation_of_the_thoracic_organs_for_image_registration_and_RT_planning
