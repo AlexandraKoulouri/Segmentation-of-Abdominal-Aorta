@@ -1,0 +1,46 @@
+function [u1,Frame] = Fast2DlevelSet(Img,c1,c2,Radius);
+% c1=200;c2=140;Radius=15;
+Img=double(Img);
+Img = double(Img/max(max(Img))*255);
+%cd ..; cd ..;cd ..;  s = cd;   s = [s, '\CohEnhDif\Matlab']; path(s, path); 
+%cd 'levelSets\MexImpementation\2DLevelSet';
+sigma=1;    % scale parameter in Gaussian kernel for smoothing.
+G=fspecial('gaussian',5,sigma);
+Img_smooth=conv2(double(Img),G,'same');  % smooth image by Gaussiin convolution
+%Img_smooth = AnDif2d(Img);
+%Img_smooth= medfilt2(Img,[9 9]);
+[Ix,Iy]=gradient(Img_smooth);
+f=Ix.^2+Iy.^2; 
+%f=Ix.*vel(:,:,1,1)+Iy.*vel(:,:,1,2);
+g=1./(1+abs(f).^1);  % edge indicator function.
+
+epsilon=1.5; % the papramater in the definition of smoothed Dirac function
+
+timestep=20;  % time step
+mu=0.19/timestep;  % coefficient of the internal (penalizing) energy term P(\phi)
+          % Note: the product timestep*mu must be less than 0.25 for stability!
+
+lambda=5; % coefficient of the weighted length term Lg(\phi)
+alf=-3.5;  % coefficient of the weighted area term Ag(\phi);
+          % Note: Choose a positive(negative) alf if the initial contour is outside(inside) the object.
+
+  
+% define initial level set function (LSF) as -c0, 0, c0 at points outside, on
+% the boundary, and inside of a region R, respectively.
+% zero level set is on the boundary of R. 
+co = 5;  
+i=1;
+
+[u] = distanceFunction1(c1,c2,Radius,size(Img),co);
+[u1]= TwoDlevelSet(u,g,Img_smooth,timestep,lambda,mu,alf, 300);
+
+
+% figure
+%pause(0.6)
+imshow(Img,[]); hold on
+ c = contour(u1,[0 0],'r','LineWidth',2);
+  title('Zero Level Set')
+  hold off;
+  Frame(i)=getframe;
+  i=i+1;
+end
